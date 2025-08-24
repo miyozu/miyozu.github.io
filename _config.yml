@@ -11,3 +11,4 @@ timezone: Asia/Jakarta
 plugins:
   - jekyll-seo-tag
   - jekyll-sitemap
+  - jekyll-feed
