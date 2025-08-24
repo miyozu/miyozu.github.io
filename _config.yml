@@ -6,6 +6,8 @@ url: ""
 markdown: kramdown
 theme: null
 
+timezone: Asia/Jakarta
+
 plugins:
   - jekyll-seo-tag
   - jekyll-sitemap
