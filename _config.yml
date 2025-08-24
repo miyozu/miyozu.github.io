@@ -2,7 +2,7 @@ title: "Miyozu"
 description: ""
 author: ""
 baseurl: "" 
-url: ""
+url: "https://miyozu.github.io"
 markdown: kramdown
 theme: null
 
