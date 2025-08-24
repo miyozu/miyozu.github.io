@@ -3,7 +3,6 @@ layout: default
 title: Beranda
 ---
 
-<h2>Artikel Terbaru</h2>
 <div class="grid">
   {% for post in site.posts %}
     <div class="card">
