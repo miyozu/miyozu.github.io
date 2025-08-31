@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title></title>
+  <script type='text/javascript' src='//pl27546830.revenuecpmgate.com/83/58/df/8358df63ee2829f2e394f2ce3e5c8bc3.js'></script>
+<style>
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #111;
+    color: #fff;
+    text-align: center;
+    overflow-x: hidden;
+    user-select: none;
+  }
+
+  #bg {
+    position: fixed;
+    inset: 0;
+    background: url("https://miyozu.github.io/s/masih-di-sini.jpg") center/cover no-repeat;
+    filter: blur(1px) brightness(0.5);
+    z-index: -1;
+  }
+
+  #content {
+    margin-top: 10vh;
+    padding: 20px;
+  }
+
+  #photo {
+    width: 130px; height: 130px;
+    border-radius: 15px;
+    background-color: white;
+    object-fit: contain;
+    display: none;
+    margin: 20px auto;
+    border: solid 2px black;
+    box-shadow: 0 0 5px rgba(255,255,255,1);
+    transition: opacity .6s ease;
+  }
+
+  #text {
+    font-size: 18px;
+    font-weight: bold;
+    opacity: 0;
+    text-shadow: 0 0 4px rgba(0,0,0,1);
+    transition: opacity .6s ease, transform .3s ease;
+    line-height: 1.4em;
+  }
+
+  #btn {
+    margin-top: 30px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: bold;
+    background: rgba(255,255,255,0.15);
+    color: #fff;
+    cursor: pointer;
+    display: none;
+    transition: transform 0.2s ease;
+  }
+  #btn:hover { transform: scale(0.9); }
+
+  .heart {
+    position: fixed;
+    top: -10px;
+    color: rgba(255,0,80,0.8);
+    font-size: 18px;
+    animation: fall linear forwards;
+  }
+
+  @keyframes fall {
+    to {
+      transform: translateY(100vh);
+      opacity: 0;
+    }
+  }
+  
+  #overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.0);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+#popup {
+  background: rgba(0,0,0,0.5);
+  padding: 20px 30px;
+  border-radius: 12px;
+  text-align: center;
+  border: solid 1px white;
+  box-shadow: 0 0 5px rgba(255,255,255,0.8);
+}
+#popup p {
+  color: white;
+  margin-bottom: 15px;
+  font-size: 16px;
+}
+#startBtn {
+  padding: 8px 18px;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  background: rgba(0,0,0,0.3);
+  color: white;
+  border: solid 1px white;
+  box-shadow: 0 0 5px rgba(255,255,255,0.8);
+  cursor: pointer;
+}
+</style>
+</head>
+<body>
+
+<div id="bg"></div>
+<audio id="music" src="masih-di-sini.mp3"></audio>
+<!-- overlay start -->
+<div id="overlay">
+  <div id="popup">
+    <p>Hai, siap lihat pesannya? 💌</p>
+    <button id="startBtn">Mulai</button>
+  </div>
+</div>
+
+<div id="content">
+  <img id="photo" src="">
+  <div id="text">Klik layar untuk mulai...</div>
+  <button id="btn">Kirim Pesan 💌</button>
+</div>
+
+<script>
+  const teks = [
+  "Kadang aku mikir...",
+  "Kenapa semua harus berubah secepat ini...💔",
+  "Dulu, kamu yang selalu bikin aku ketawa...😊",
+  "Sekarang... kamu yang bikin aku jatuh berkali-kali.😞",
+  "Aku udah coba kuat...💪 aku udah coba ikhlas...🙏",
+  "Tapi nyatanya... hati ini masih nggak bisa bohong.💔",
+  "Aku kangen...😔 aku masih sayang...❤️",
+  "Tapi kamu bahkan nggak pernah lagi peduli.💭",
+  "Mungkin... aku cuma tempat singgah...🚶",
+  "Bukan rumah yang kamu cari.🏚️",
+  "Dan kalau suatu saat kamu denger ini...🎧",
+  "Aku cuma mau bilang... aku masih di sini...🌙 meski kamu udah pergi jauh.🌌"
+];
+
+  const fotos = [
+    "https://miyozu.github.io/s/bubu20.gif",
+    "https://miyozu.github.io/s/bubu21.webp",
+    "https://miyozu.github.io/s/bubu22.gif",
+    "https://miyozu.github.io/s/bubu23.gif",
+    "https://miyozu.github.io/s/bubu24.gif",
+    "https://miyozu.github.io/s/bubu25.gif",
+    "https://miyozu.github.io/s/bubu26.gif",
+    "https://miyozu.github.io/s/bubu27.webp",
+    "https://miyozu.github.io/s/bubu28.gif",
+    "https://miyozu.github.io/s/bubu28.gif",
+    "https://miyozu.github.io/s/bubu30.gif",
+    "https://miyozu.github.io/s/bubu31.gif",
+  ];
+
+  // jadwal sinkron teks (ms), sama kayak feeldream
+  const jadwal = [0, 1500, 4500, 7500, 11500, 15500, 19500, 22500, 25500, 27500, 29500, 32500];
+
+  const textEl = document.getElementById("text");
+  const photoEl = document.getElementById("photo");
+  const btn = document.getElementById("btn");
+  const music = document.getElementById("music");
+
+// document.body.addEventListener("click", start, {once:true});
+document.getElementById("startBtn").addEventListener("click", ()=>{
+  document.getElementById("overlay").style.display = "none";
+  start();
+});
+
+  function start(){
+    music.play();
+    tampilkan(0);
+    jadwal.forEach((waktu, i)=>{
+      if(i>0 && i<=teks.length){
+        setTimeout(()=>tampilkan(i), waktu);
+      }
+    });
+    // munculkan tombol setelah akhir
+    setTimeout(()=>btn.style.display="inline-block", jadwal[jadwal.length-1]+1500);
+    setInterval(jatuhkanHati, 400);
+  }
+
+  function tampilkan(i){
+    textEl.style.opacity = 0;
+    setTimeout(()=>{
+      textEl.innerHTML = teks[i];
+      textEl.style.opacity = 1;
+      textEl.style.transform = "scale(1.05)";
+      setTimeout(()=>textEl.style.transform="scale(1)",300);
+
+      // ganti foto sesuai step
+      if(i<fotos.length){
+        photoEl.src = fotos[i];
+        photoEl.style.display = "block";
+        photoEl.style.opacity = 1;
+      }
+    },300);
+  }
+
+  btn.addEventListener("click", ()=>{
+    let jawaban = prompt("Ketik pesanmu (max 20 karakter):");
+    if(jawaban && jawaban.trim().length <= 20){
+      let pesan = encodeURIComponent(jawaban.trim());
+      window.location.href = "https://api.whatsapp.com/send?phone=&text=" + pesan;
+    } else {
+      alert("Pesan kosong / terlalu panjang!");
+    }
+  });
+
+  function jatuhkanHati(){
+    const heart = document.createElement("div");
+    heart.className = "heart";
+    heart.innerHTML = "🌙";
+    heart.style.left = Math.random()*100 + "vw";
+    heart.style.fontSize = (12 + Math.random()*20) + "px";
+    heart.style.animationDuration = (3+Math.random()*2)+"s";
+    document.body.appendChild(heart);
+    setTimeout(()=>heart.remove(), 5000);
+  }
+</script>
+</body>
+</html>
